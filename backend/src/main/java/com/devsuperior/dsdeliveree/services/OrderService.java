@@ -84,17 +84,39 @@ public class OrderService { //Isto vai ser um componente que nós vamos poder in
     gerida pelo JPA PARA QUE EU QUANDO SALVE O MEU PEDIDO(Order order) ele tambem salve as associacoes de quais os produtos tambem estão nesse pedido.  */
 	
 	
+	
+	/*O repository ele retorna entidade, só depois é que vou converter para OrderDTO, vou criar um constructor lá que vai converter cada "Order para OrderDTO"  */
+
+	/*RESUMINDO: public List<OrderDTO> insert(OrderDTO dto){...
+	 
+	  Esse pedido OrderDTO que chegou aqui que é objecto DTO vai conter todos os dados do pedido e tambem os produtos desse pedido,
+	  Então o que eu faço? Vou instanciar aqui um pedido que é a minha entidade, vou instanciar aqui um novo com new e depois vou fazer o seguinte, vou percorrer todos os produtos 
+	  que estão no meu ProductDTO, VOU CHAMAR CADA UM DELES DE "P", e ai vou fazer o seguinte, 
+	  vou instanciar um produto com base no ID */
+
+	
+	
+	
+	@Transactional //Porque vai ser uma alteração no banco de dados
+	/*Agora é assim, como vc faz para alterar um registo?
+	  Vc vai ter que dar um getOne para instanciar um objecto monitorado pelo JPA
+       
+      repository é o nosso OrderRepository repository que está no inicio como injeccao de dependencia 
+      Instanciei na memoria um pedido sem tocar no banco de dados, o getOne não vai no bd mas está instanciado aqui o nosso pedido
+      que é um objecto que vai estar monitorado pelo JPA, ai eu posso fazer alterações nele e depois eu mando salvar, ai ele sim, salva e vai no bando de dados.
+      Agora eu vou fazer esse pedido RECEBER status "DELIVERED"
+      Feito isto eu vou salvar em que vai ser order= repository.save(order) e ai salvando ele, o order, retornou a referencia para a variavel order
+      Por fim vou retornar um novo OrderDTO passando o order como argumento;*/
+	public OrderDTO setDelivered(Long id){
+		Order order = repository.getOne(id);
+		order.setStatus(OrderStatus.DELIVERED);
+		order = repository.save(order);
+		return new OrderDTO(order);
+	}
+	
 }
 
 
-/*O repository ele retorna entidade, só depois é que vou converter para OrderDTO, vou criar um constructor lá que vai converter cada "Order para OrderDTO"  */
-
-/*RESUMINDO: public List<OrderDTO> insert(OrderDTO dto){...
- 
-  Esse pedido OrderDTO que chegou aqui que é objecto DTO vai conter todos os dados do pedido e tambem os produtos desse pedido,
-  Então o que eu faço? Vou instanciar aqui um pedido que é a minha entidade, vou instanciar aqui um novo com new e depois vou fazer o seguinte, vou percorrer todos os produtos 
-  que estão no meu ProductDTO, VOU CHAMAR CADA UM DELES DE "P", e ai vou fazer o seguinte, 
-  vou instanciar um produto com base no ID */
 
 
 
